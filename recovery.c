@@ -635,28 +635,26 @@ wipe_data(int confirm) {
         /*static*/char** title_headers = NULL;
 
         if (title_headers == NULL) {
-            char* headers[] = { "Confirm wipe of all user data?",
-                                "  THIS CAN NOT BE UNDONE.",
+            char* headers[] = { "Confirm Wipe of all User Data?",
+
+                                " \n Following Partitions will be WIPED:\n",
+				"     /data",
+				"     /cache",
+				"     /sd-ext",
+				"     /sdcard/.android_secure",
+                                "",
+                                "  THIS CANNOT BE REVERSED.",
                                 "",
                                 NULL };
             title_headers = prepend_title((const char**)headers);
         }
 
         char* items[] = { " No",
-                          " No",
-                          " No",
-                          " No",
-                          " No",
-                          " No",
-                          " No",
-                          " Yes -- delete all user data",   // [7]
-                          " No",
-                          " No",
-                          " No",
+                          " Yes -- Delete ALL User Data",   // [7]
                           NULL };
 
         int chosen_item = get_menu_selection(title_headers, items, 1, 0);
-        if (chosen_item != 7) {
+        if (chosen_item != 1) {
             return;
         }
     }
