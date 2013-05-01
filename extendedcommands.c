@@ -1473,14 +1473,13 @@ void show_advanced_menu()
 
     static char* list[] = { "Aroma File Manager",
                             "Wipe Battery Stats",
-                            "wipe dalvik cache",
-                            "report error",
-                            "key test",
-                            "show log",
-                            "fix permissions",
-                            "partition sdcard",
-                            "partition external sdcard",
-                            "partition internal sdcard",
+                            "Report Error",
+                            "Key Test",
+                            "Show Log",
+                            "Fix Permissions",
+                            "Partition SD card",
+                            "Partition External SD card",
+                            "Partition Internal SD card",
                             NULL
     };
 
@@ -1511,24 +1510,11 @@ void show_advanced_menu()
                 break;
             }
             case 2:
-                if (0 != ensure_path_mounted("/data"))
-                    break;
-                ensure_path_mounted("/sd-ext");
-                ensure_path_mounted("/cache");
-                if (confirm_selection( "Confirm wipe?", "Yes - Wipe Dalvik Cache")) {
-                    __system("rm -r /data/dalvik-cache");
-                    __system("rm -r /cache/dalvik-cache");
-                    __system("rm -r /sd-ext/dalvik-cache");
-                    ui_print("Dalvik Cache wiped.\n");
-                }
-                ensure_path_unmounted("/data");
-                break;
-            case 3:
                 handle_failure(1);
                 break;
-            case 4:
+            case 3:
             {
-                ui_print("Outputting key codes.\n");
+                ui_print("Outputting key codes...\n");
                 ui_print("Go back to end debugging.\n");
                 int key;
                 int action;
@@ -1541,28 +1527,120 @@ void show_advanced_menu()
                 while (action != GO_BACK);
                 break;
             }
-            case 5:
+            case 4:
                 ui_printlogtail(12);
                 break;
-            case 6:
+            case 5:
                 ensure_path_mounted("/system");
                 ensure_path_mounted("/data");
                 ui_print("Fixing permissions...\n");
                 __system("fix_permissions");
                 ui_print("Done!\n");
                 break;
-            case 7:
+            case 6:
                 partition_sdcard("/sdcard");
                 break;
-            case 8:
+            case 7:
                 partition_sdcard("/external_sd");
                 break;
-            case 9:
+            case 8:
                 partition_sdcard("/emmc");
                 break;
         }
     }
 }
+
+
+void show_wipeall_menu()
+{
+
+
+                static char* headers[] = {  "Wipe Options",
+				                "",
+				                NULL
+		    };
+
+		    static char* list[] = { "Wipe System",
+                                            "Wipe Data / Factory Reset",
+                                            "Wipe Cache",
+				            "Wipe Dalvik Cache",
+                                            "Wipe System and Data",
+                                            "Wipe Cache and Dalvik Cache",
+				            NULL
+		    };
+
+		    int chosen_item = get_menu_selection(headers, list, 0, 0);
+		   // if (chosen_item == GO_BACK)
+			//break;
+		    switch (chosen_item)
+		    {
+                        case 0:
+			 if (confirm_selection("Confirm wipe System ?", "Yes, I will install a new ROM!")) { 
+                            {
+                                ui_print("\n-- Wiping system...\n");
+                       		erase_volume("/system");
+                        	ui_print("\n==Now flash a new ROM!==\n");
+			    }
+			}
+				break;
+			case 1:
+			    {
+               			wipe_data();
+			    }
+				break;
+			case 2:
+               			 if (confirm_selection("Confirm wipe?", "Yes - Wipe Cache"))
+                		{
+                		    ui_print("\n-- Wiping cache...\n");
+                		    erase_volume("/cache");
+                		    ui_print("Cache wipe complete.\n");
+               			 }
+                		break;
+			case 3:
+                		if (0 != ensure_path_mounted("/data"))
+                		    break;
+				if (confirm_selection( "Confirm wipe?", "Yes - Wipe Dalvik Cache")) 
+				{
+                		    ensure_path_mounted("/sd-ext");
+                		    ensure_path_mounted("/cache");
+                                    ui_print("\n-- Wiping dalvik cache...\n");
+                		    __system("rm -r /data/dalvik-cache");
+                		    __system("rm -r /cache/dalvik-cache");
+                		    __system("rm -r /sd-ext/dalvik-cache");
+                		    ui_print("Dalvik cache wipe complete.\n");
+               			 }
+               			ensure_path_unmounted("/data");
+                		break;
+         		case 4:
+                 	{
+                    		if (confirm_selection("Confirm wipe data & system?", "Yes, I will install a new ROM!")) {
+                                        ui_print("\n-- Wiping data...\n");
+                        		wipe_data();
+                        		ui_print("-- Wiping system...\n");
+                        		erase_volume("/system");
+                        		ui_print("\n==Now flash a new ROM!==\n");
+	                    }
+			    break;
+	                } 
+			case 5:
+                		if (0 != ensure_path_mounted("/data"))
+                		    break;
+				if (confirm_selection( "Confirm Wipe?", "Yes - Wipe Cache and Dalvik Cache"))
+				{
+                                    ui_print("\n-- Wiping cache...\n");
+                		    erase_volume("/cache");
+                		    ensure_path_mounted("/sd-ext");
+                		    ensure_path_mounted("/cache");
+                                    ui_print("-- Wiping dalvik cache...\n");
+                		    __system("rm -r /data/dalvik-cache");
+                		    __system("rm -r /cache/dalvik-cache");
+                		    __system("rm -r /sd-ext/dalvik-cache");
+                		    ui_print("Cache and Dalvik Cache Wiped.\n");
+               			 }
+               			ensure_path_unmounted("/data");
+                		break;
+			}
+		}
 
 void write_fstab_root(char *path, FILE *file)
 {

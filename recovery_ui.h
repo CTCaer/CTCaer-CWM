@@ -72,17 +72,19 @@ int device_wipe_data();
 #define SELECT_ITEM         -4
 #define GO_BACK             -5
 
-#define ITEM_REBOOT          0
-#define ITEM_APPLY_EXT       1
-#define ITEM_APPLY_SDCARD    1  // historical synonym for ITEM_APPLY_EXT
-#define ITEM_WIPE_DATA       2
-#define ITEM_WIPE_CACHE      3
+#define ITEM_APPLY_EXT       0
+#define ITEM_APPLY_SDCARD    0  // historical synonym for ITEM_APPLY_EXT
+//#define ITEM_APPLY_SIDELOAD  1
+#define ITEM_WIPES_ALL       1
+#define ITEM_NANDROID        2
+#define ITEM_PARTITION       3
+#define ITEM_ADVANCED        4
+#define ITEM_REBOOT          5
+#define ITEM_WIPE_DATA       6
+#define ITEM_WIPE_CACHE      7
 // unused in cwr
-#define ITEM_APPLY_CACHE     3
-#define ITEM_NANDROID        4
-#define ITEM_PARTITION       5
-#define ITEM_ADVANCED        6
-#define ITEM_POWEROFF        7
+#define ITEM_APPLY_CACHE     7
+#define ITEM_POWEROFF        8
 
 // Header text to display above the main menu.
 extern char* MENU_HEADERS[];

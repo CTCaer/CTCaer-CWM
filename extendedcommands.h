@@ -29,6 +29,9 @@ void
 show_partition_menu();
 
 void
+show_wipeall_menu();
+
+void
 show_choose_zip_menu();
 
 int

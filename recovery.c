@@ -303,7 +303,7 @@ finish_recovery(const char *send_intent) {
     sync();  // For good measure.
 }
 
-static int
+/*static*/int //to be able to call it from wipe options
 erase_volume(const char *volume) {
     ui_set_background(BACKGROUND_ICON_INSTALLING);
     ui_show_indeterminate_progress();
@@ -629,10 +629,10 @@ update_directory(const char* path, const char* unmount_when_done) {
     return result;
 }
 
-static void
+/*static*/void
 wipe_data(int confirm) {
     if (confirm) {
-        static char** title_headers = NULL;
+        /*static*/char** title_headers = NULL;
 
         if (title_headers == NULL) {
             char* headers[] = { "Confirm wipe of all user data?",
@@ -765,6 +765,10 @@ prompt_and_wait() {
                 show_install_update_menu();
                 break;
 
+	    case ITEM_WIPES_ALL:
+               show_wipeall_menu();
+               break;
+
             case ITEM_NANDROID:
                 show_nandroid_menu();
                 break;
@@ -776,10 +780,6 @@ prompt_and_wait() {
             case ITEM_ADVANCED:
                 show_advanced_menu();
                 break;
-
-            case ITEM_POWEROFF:
-                poweroff = 1;
-                return;
         }
     }
 }
