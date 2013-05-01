@@ -1522,11 +1522,13 @@ void show_advanced_menu()
                 ui_printlogtail(12);
                 break;
             case 5:
-                ensure_path_mounted("/system");
-                ensure_path_mounted("/data");
-                ui_print("Fixing permissions...\n");
-                __system("fix_permissions");
-                ui_print("Done!\n");
+               if (confirm_selection("Confirm ?", "Yes - Fix Permissions")) {
+                    ensure_path_mounted("/system");
+                    ensure_path_mounted("/data");
+                    ui_print("Fixing permissions...\n");
+                    __system("fix_permissions");
+                    ui_print("Done!\n");
+                } 
                 break;
             case 6:
                 partition_sdcard("/sdcard");
@@ -1752,8 +1754,9 @@ void handle_failure(int ret)
     if (0 != ensure_path_mounted("/sdcard"))
         return;
     mkdir("/sdcard/clockworkmod", S_IRWXU | S_IRWXG | S_IRWXO);
-    __system("cp /tmp/recovery.log /sdcard/clockworkmod/recovery.log");
-    ui_print("/tmp/recovery.log was copied to /sdcard/clockworkmod/recovery.log. Please open ROM Manager to report the issue.\n");
+    ui_print("Log copied to /sdcard/clockworkmod/lupus_recovery.log\n");
+    ui_print("Send lupus_recovery.log to wedgess @xda\n");
+    __system("cp /tmp/recovery.log /sdcard/clockworkmod/lupus_recovery.log");
 }
 
 int is_path_mounted(const char* path) {
