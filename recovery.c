@@ -700,8 +700,51 @@ prompt_and_wait() {
         int status;
         switch (chosen_item) {
             case ITEM_REBOOT:
-                poweroff=0;
-                return;
+{
+
+		    static char* headers[] = {  "Reboot Options",
+				                "",
+				                NULL
+		    };
+
+		    static char* list[] = { "Reboot System Now",
+				            "Reboot Recovery",
+				            "Reboot into Fastboot Mode",
+                                            "Power Off",
+				            NULL
+		    };
+
+		    int chosen_item = get_menu_selection(headers, list, 0, 0);
+		    switch (chosen_item)
+		    {
+			case 0:
+			    {
+				ui_print("Rebooting Device...\n");
+				poweroff = 0;
+				return;
+			    }
+			case 1:
+			    {
+				ui_print("Rebooting to Recovery...\n");
+				__system("reboot recovery");
+				break;
+			    }
+			case 2:
+			    {
+				ui_print("Rebooting to Bootloader...\n");
+				__system("reboot bootloader");
+				break;
+			    }
+			case 3:
+			    {
+				ui_print("Shutting Down...\n");
+				poweroff = 1;
+				return;
+			    }
+		    }
+		    break;
+		}
+
 
             case ITEM_WIPE_DATA:
                 wipe_data(ui_text_visible());
